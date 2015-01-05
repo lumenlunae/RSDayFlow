@@ -24,7 +24,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class RSDFDatePickerCollectionView;
 @protocol RSDFDatePickerViewDelegate;
 @protocol RSDFDatePickerViewDataSource;
 
@@ -41,6 +41,7 @@
  */
 - (instancetype)initWithFrame:(CGRect)frame calendar:(NSCalendar *)calendar;
 
+@property (nonatomic, readonly, strong) RSDFDatePickerCollectionView *collectionView;
 ///-----------------------------
 /// @name Accessing the Delegate
 ///-----------------------------

@@ -42,7 +42,7 @@ static NSString * const RSDFDatePickerViewDayCellIdentifier = @"RSDFDatePickerVi
 @property (nonatomic, readonly, assign) RSDFDatePickerDate fromDate;
 @property (nonatomic, readonly, assign) RSDFDatePickerDate toDate;
 @property (nonatomic, readonly, strong) RSDFDatePickerDaysOfWeekView *daysOfWeekView;
-@property (nonatomic, readonly, strong) RSDFDatePickerCollectionView *collectionView;
+
 @property (nonatomic, readonly, strong) RSDFDatePickerCollectionViewLayout *collectionViewLayout;
 @property (nonatomic, readonly, strong) NSDate *today;
 @property (nonatomic, readonly, assign) NSUInteger daysInWeek;
@@ -278,11 +278,14 @@ static NSString * const RSDFDatePickerViewDayCellIdentifier = @"RSDFDatePickerVi
     CGFloat delta = CGRectGetMaxY(dateItemRect) - CGRectGetMinY(monthSectionHeaderRect);
     CGFloat actualViewHeight = CGRectGetHeight(cv.frame) - cv.contentInset.top - cv.contentInset.bottom;
     
+    [cv scrollToItemAtIndexPath:dateItemIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:animated];
+    /*
     if (delta <= actualViewHeight) {
         [self scrollToTopOfSection:monthSection animated:animated];
     } else {
         [cv scrollToItemAtIndexPath:dateItemIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:animated];
     }
+     */
 }
 
 - (void)selectDate:(NSDate *)date
