@@ -42,6 +42,7 @@
 - (instancetype)initWithFrame:(CGRect)frame calendar:(NSCalendar *)calendar;
 
 @property (nonatomic, readonly, strong) RSDFDatePickerCollectionView *collectionView;
+@property (nonatomic, readonly, strong) NSCalendar *calendar;
 ///-----------------------------
 /// @name Accessing the Delegate
 ///-----------------------------
