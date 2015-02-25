@@ -361,9 +361,14 @@ static NSString * const RSDFDatePickerViewDayCellIdentifier = @"RSDFDatePickerVi
 - (NSDate *)visibleDateForMonthFromTop
 {
     NSArray *visiblePaths = self.sortedVisibleItems;
+    if (visiblePaths.count == 0) {
+        return nil;
+    }
     NSIndexPath *indexPath = [visiblePaths firstObject];
     NSDate *firstDayInMonth = [self dateForFirstDayInSection:indexPath.section];
     return firstDayInMonth;
+    
+
 }
 
 - (NSDate *)visibleDateForMonthFromBottom
