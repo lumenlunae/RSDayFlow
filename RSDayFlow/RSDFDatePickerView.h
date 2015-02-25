@@ -25,6 +25,7 @@
 
 #import <UIKit/UIKit.h>
 @class RSDFDatePickerCollectionView;
+@class RSDFDatePickerDaysOfWeekView;
 @protocol RSDFDatePickerViewDelegate;
 @protocol RSDFDatePickerViewDataSource;
 
@@ -43,6 +44,7 @@
 
 @property (nonatomic, readonly, strong) RSDFDatePickerCollectionView *collectionView;
 @property (nonatomic, readonly, strong) NSCalendar *calendar;
+@property (nonatomic, strong) RSDFDatePickerDaysOfWeekView *daysOfWeekView;
 ///-----------------------------
 /// @name Accessing the Delegate
 ///-----------------------------
@@ -84,7 +86,7 @@
  @param animated YES if you want to animate the change in position, NO if it should be immediate.
  */
 
-- (void)scrollToDate:(NSDate *)date animated:(BOOL)animated;
+- (void)scrollToDate:(NSDate *)date animated:(BOOL)animated topOfDate:(BOOL)topOfDate;
 
 /// ------------------------
 /// @name Selecting the Date
@@ -102,6 +104,21 @@
 
 - (void)selectDate:(NSDate *)date;
 
+/// ------------------------
+/// @name Finding Date
+/// ------------------------
+
+/**
+ Shows the earliest date that is visible
+ */
+
+- (NSDate *)visibleDateForMonthFromTop;
+
+/**
+ Shows the latest date that is visible
+ */
+
+- (NSDate *)visibleDateForMonthFromBottom;
 ///-------------------------
 /// @name Reloading the Data
 ///-------------------------
@@ -152,6 +169,7 @@
  */
 - (Class)dayCellClass;
 
+- (CGRect)daysOfWeekViewFrame;
 @end
 
 /**
