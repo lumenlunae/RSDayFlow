@@ -2,7 +2,7 @@
 // RSDFDatePickerDayCell.h
 //
 // Copyright (c) 2013 Evadne Wu, http://radi.ws/
-// Copyright (c) 2013-2014 Ruslan Skorb, http://lnkd.in/gsBbvb
+// Copyright (c) 2013-2015 Ruslan Skorb, http://ruslanskorb.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RSDayFlow.h"
+#import "RSDFDatePickerDate.h"
 
 /**
  The `RSDFDatePickerDayCell` is a cell which used to display a day in the date picker view.
@@ -67,14 +67,31 @@
 @property (nonatomic, getter = isToday) BOOL today;
 
 /**
+ A Boolean value that determines whether the cell represents a past day.
+ */
+@property (nonatomic, getter = isPastDate) BOOL pastDate;
+
+/**
  A Boolean value that determines whether the cell have a mark.
  */
 @property (nonatomic, getter = isMarked) BOOL marked;
 
 /**
- A Boolean value that determines whether all tasks for the cell's day are completed.
+ A Boolean value that determines whether the cell is out of range or not (startDate, endDate)
  */
-@property (nonatomic, getter = isCompleted) BOOL completed;
+@property (nonatomic, getter = isOutOfRange) BOOL outOfRange;
+
+/**
+ The color of the default mark image for the cell of the day. Default value is [UIColor colorWithRed:184/255.0f green:184/255.0f blue:184/255.0f alpha:1.0f].
+ 
+ @discussion Will be used to create the mark image if `markImage` is equal to `nil`.
+ */
+@property (nonatomic, copy) UIColor *markImageColor;
+
+/**
+ The mark image for the cell of the day. The default mark image is a small round mark.
+ */
+@property (nonatomic, strong) UIImage *markImage;
 
 ///---------------------------------------
 /// @name Accessing Attributes of the View
@@ -113,11 +130,39 @@
 - (UIColor *)dayOffLabelTextColor;
 
 /**
+ The text color for the label of the disabled day (not in range of start/end date set on calendar). Default value is [UIColor colorWithRed:184/255.0f green:184/255.0f blue:184/255.0f alpha:1.0f].
+ 
+ @discussion Can be overridden in subclasses for customization.
+ */
+- (UIColor *)outOfRangeDayLabelTextColor;
+
+/**
+ The font for the label of the disabled day (not in range of start/end date set on calendar). Default value is [UIFont fontWithName:@"HelveticaNeue" size:18.0f].
+ 
+ @discussion Can be overridden in subclasses for customization.
+ */
+- (UIFont *)outOfRangeDayLabelFont;
+
+/**
  The text color for the label of the day that's not this month. Default value is [UIColor clearColor].
  
  @discussion Can be overridden in subclasses for customization.
  */
 - (UIColor *)notThisMonthLabelTextColor;
+
+/**
+ The text color for the label of the past day when it is selected. Default value is [UIColor blackColor].
+ 
+ @discussion Can be overridden in subclasses for customization.
+ */
+- (UIColor *)pastDayLabelTextColor;
+
+/**
+ The text color for the label of the past day off when it is selected. Default value is [UIColor colorWithRed:184/255.0f green:184/255.0f blue:184/255.0f alpha:1.0f].
+ 
+ @discussion Can be overridden in subclasses for customization.
+ */
+- (UIColor *)pastDayOffLabelTextColor;
 
 /**
  The font for the label of the current day. Default value is [UIFont fontWithName:@"HelveticaNeue" size:18.0f].
@@ -202,34 +247,6 @@
  @discussion Can be overridden in subclasses for customization.
  */
 - (UIImage *)customOverlayImage;
-
-/**
- The color of the incomplete mark image for the cell of the day. Default value is [UIColor colorWithRed:184/255.0f green:184/255.0f blue:184/255.0f alpha:1.0f].
- 
- @discussion Can be overridden in subclasses for customization. Ignored if `customIncompleteMarkImage` is not equal to `nil`.
- */
-- (UIColor *)incompleteMarkImageColor;
-
-/**
- The custom incomplete mark image for the cell of the day. Default value is `nil`.
- 
- @discussion Can be overridden in subclasses for customization.
- */
-- (UIImage *)customIncompleteMarkImage;
-
-/**
- The color of the complete mark image for the cell of the day. Default value is [UIColor colorWithRed:83/255.0f green:215/255.0f blue:105/255.0f alpha:1.0f].
- 
- @discussion Can be overridden in subclasses for customization. Ignored if `customCompleteMarkImage` is not equal to `nil`.
- */
-- (UIColor *)completeMarkImageColor;
-
-/**
- The custom complete mark image for the cell of the day. Default value is `nil`.
- 
- @discussion Can be overridden in subclasses for customization.
- */
-- (UIImage *)customCompleteMarkImage;
 
 /**
  The color of the divider image for the cell of the day. Default value is [UIColor colorWithRed:200/255.0f green:200/255.0f blue:200/255.0f alpha:1.0f].

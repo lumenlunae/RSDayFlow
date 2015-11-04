@@ -2,7 +2,7 @@
 // RSDFCustomDatePickerDayCell.m
 //
 // Copyright (c) 2013 Evadne Wu, http://radi.ws/
-// Copyright (c) 2013-2014 Ruslan Skorb, http://lnkd.in/gsBbvb
+// Copyright (c) 2013-2015 Ruslan Skorb, http://ruslanskorb.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -90,6 +90,16 @@
 - (UIColor *)dividerImageColor
 {
     return [UIColor clearColor];
+}
+
+- (UIColor *)pastDayLabelTextColor
+{
+    return [UIColor lightGrayColor];
+}
+
+- (UIColor *)pastDayOffLabelTextColor
+{
+    return [UIColor lightGrayColor];
 }
 
 @end

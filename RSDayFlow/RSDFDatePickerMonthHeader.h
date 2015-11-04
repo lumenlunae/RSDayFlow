@@ -2,7 +2,7 @@
 // RSDFDatePickerMonthHeader.h
 //
 // Copyright (c) 2013 Evadne Wu, http://radi.ws/
-// Copyright (c) 2013-2014 Ruslan Skorb, http://lnkd.in/gsBbvb
+// Copyright (c) 2013-2015 Ruslan Skorb, http://ruslanskorb.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RSDayFlow.h"
+#import "RSDFDatePickerDate.h"
 
 /**
  The `RSDFDatePickerMonthHeader` is a reusable view which used to display a month and year in the date picker view.
