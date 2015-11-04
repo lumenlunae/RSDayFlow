@@ -25,6 +25,9 @@
 
 #import <UIKit/UIKit.h>
 
+@class RSDFDatePickerCollectionView;
+@class RSDFDatePickerDaysOfWeekView;
+
 @protocol RSDFDatePickerViewDelegate;
 @protocol RSDFDatePickerViewDataSource;
 
@@ -32,6 +35,7 @@
  The `RSDFDatePickerView` is a calendar view with infinity scrolling.
 */
 @interface RSDFDatePickerView : UIView <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+
 
 /**
  Designated initializer. Initializes and returns a newly allocated view object with the specified frame rectangle and the specified calendar.
@@ -51,6 +55,11 @@
  @param endDate Last selectable date
  */
 - (instancetype)initWithFrame:(CGRect)frame calendar:(NSCalendar *)calendar startDate:(NSDate *)startDate endDate:(NSDate *)endDate;
+
+@property (nonatomic, readonly, strong) RSDFDatePickerCollectionView *collectionView;
+@property (nonatomic, readonly, strong) NSCalendar *calendar;
+@property (nonatomic, strong) RSDFDatePickerDaysOfWeekView *daysOfWeekView;
+
 
 ///-----------------------------
 /// @name Accessing the Delegate
@@ -103,6 +112,7 @@
  
  @param animated YES if you want to animate the change in position, NO if it should be immediate.
  */
+- (void)scrollToDate:(NSDate *)date animated:(BOOL)animated topOfDate:(BOOL)topOfDate;
 
 - (void)scrollToDate:(NSDate *)date animated:(BOOL)animated;
 
@@ -121,6 +131,23 @@
  */
 
 - (void)selectDate:(NSDate *)date;
+
+/// ------------------------
+/// @name Finding Date
+/// ------------------------
+
+/**
+ Shows the earliest date that is visible
+ */
+
+- (NSDate *)visibleDateForMonthFromTop;
+
+/**
+ Shows the latest date that is visible
+ */
+
+- (NSDate *)visibleDateForMonthFromBottom;
+
 
 ///-------------------------
 /// @name Reloading the Data
@@ -143,6 +170,8 @@
  @discussion Can be overridden in subclasses for customization.
  */
 - (Class)daysOfWeekViewClass;
+
+- (CGRect)daysOfWeekViewFrame;
 
 /**
  The class of the collection view which used to display days and months in the date picker view. Default value is `RSDFDatePickerCollectionView`.
@@ -265,5 +294,7 @@
  @return The mark image for the specified date.
  */
 - (UIImage *)datePickerView:(RSDFDatePickerView *)view markImageForDate:(NSDate *)date;
+
+- (BOOL)datePickerView:(RSDFDatePickerView *)view isCompletedAllTasksOnDate:(NSDate *)date;
 
 @end

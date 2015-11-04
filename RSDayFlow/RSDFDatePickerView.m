@@ -38,17 +38,17 @@ static NSString * const RSDFDatePickerViewDayCellIdentifier = @"RSDFDatePickerVi
 
 @interface RSDFDatePickerView () <RSDFDatePickerCollectionViewDelegate>
 
-@property (nonatomic, readonly, strong) NSCalendar *calendar;
-@property (nonatomic, readonly, strong) RSDFDatePickerDaysOfWeekView *daysOfWeekView;
-@property (nonatomic, readonly, strong) RSDFDatePickerCollectionView *collectionView;
 @property (nonatomic, readonly, strong) RSDFDatePickerCollectionViewLayout *collectionViewLayout;
 @property (nonatomic, readonly, strong) NSDate *today;
 @property (nonatomic, readonly, assign) NSUInteger daysInWeek;
 @property (nonatomic, readonly, strong) NSDate *selectedDate;
 
+@property (nonatomic, strong) NSArray *sortedVisibleItems;
+
 // From and to date are the currently displayed dates in the calendar
 // These values change in infinite scrolling mode
 @property (nonatomic, readonly, strong) NSDate *fromDate;
+
 @property (nonatomic, readonly, strong) NSDate *toDate;
 
 // start and end date are date limits displayed in the calendar (No infinite scrolling)
@@ -126,6 +126,8 @@ static NSString * const RSDFDatePickerViewDayCellIdentifier = @"RSDFDatePickerVi
     self.collectionView.frame = [self collectionViewFrame];
     if (!self.collectionView.superview) {
         [self addSubview:self.collectionView];
+        [self scrollToToday:YES];
+
     } else {
         [self.collectionViewLayout invalidateLayout];
         [self.collectionViewLayout prepareLayout];
@@ -258,12 +260,28 @@ static NSString * const RSDFDatePickerViewDayCellIdentifier = @"RSDFDatePickerVi
 
 #pragma mark - Public
 
+- (NSArray *)sortedVisibleItems
+{
+    if (!_sortedVisibleItems) {
+        _sortedVisibleItems = [[self.collectionView indexPathsForVisibleItems] sortedArrayUsingSelector:@selector(compare:)];
+    }
+    return _sortedVisibleItems;
+}
+
+
+
 - (void)reloadData
 {
     [self.collectionView reloadData];
 }
 
+
 - (void)scrollToDate:(NSDate *)date animated:(BOOL)animated
+{
+    [self scrollToDate:date animated:animated topOfDate:NO];
+}
+
+- (void)scrollToDate:(NSDate *)date animated:(BOOL)animated topOfDate:(BOOL)topOfDate
 {
     if (self.startDate && [date compare:self.startDate] == NSOrderedAscending) {
         return;
@@ -312,8 +330,12 @@ static NSString * const RSDFDatePickerViewDayCellIdentifier = @"RSDFDatePickerVi
     CGFloat delta = CGRectGetMaxY(dateItemRect) - CGRectGetMinY(monthSectionHeaderRect);
     CGFloat actualViewHeight = CGRectGetHeight(cv.frame) - cv.contentInset.top - cv.contentInset.bottom;
     
-    if (delta <= actualViewHeight) {
-        [self scrollToTopOfSection:monthSection animated:animated];
+    if (topOfDate) {
+        if (delta <= actualViewHeight) {
+            [self scrollToTopOfSection:monthSection animated:animated];
+        } else {
+            [cv scrollToItemAtIndexPath:dateItemIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:animated];
+        }
     } else {
         [cv scrollToItemAtIndexPath:dateItemIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:animated];
     }
@@ -351,6 +373,39 @@ static NSString * const RSDFDatePickerViewDayCellIdentifier = @"RSDFDatePickerVi
             }
         }
     }
+}
+
+- (NSDate *)dateFromIndexPath:(NSIndexPath *)indexPath
+{
+    NSDate *firstDayInMonth = [self dateForFirstDayInSection:indexPath.section];
+    NSUInteger weekday = [self reorderedWeekday:[self.calendar components:NSCalendarUnitWeekday fromDate:firstDayInMonth].weekday];
+    
+    NSDate *cellDate = [self.calendar dateByAddingComponents:((^{
+        NSDateComponents *dateComponents = [NSDateComponents new];
+        dateComponents.day = indexPath.item - weekday;
+        return dateComponents;
+    })()) toDate:firstDayInMonth options:0];
+    
+    return cellDate;
+}
+
+- (NSDate *)visibleDateForMonthFromTop
+{
+    NSArray *visiblePaths = self.sortedVisibleItems;
+    if (visiblePaths.count == 0) {
+        return nil;
+    }
+    NSIndexPath *indexPath = [visiblePaths firstObject];
+    NSDate *firstDayInMonth = [self dateForFirstDayInSection:indexPath.section];
+    return firstDayInMonth;
+}
+
+- (NSDate *)visibleDateForMonthFromBottom
+{
+    NSArray *visiblePaths = self.sortedVisibleItems;
+    NSIndexPath *indexPath = [visiblePaths lastObject];
+    NSDate *firstDayInMonth = [self dateForFirstDayInSection:indexPath.section];
+    return firstDayInMonth;
 }
 
 #pragma mark - Helper Methods
@@ -845,6 +900,8 @@ static NSString * const RSDFDatePickerViewDayCellIdentifier = @"RSDFDatePickerVi
     //	118.0ms    1.7%	118.0	 	_objc_rootReleaseWasZero
     //	105.0ms    1.5%	105.0	 	DYLD-STUB$$CFDictionarySetValue$shim
     
+    self.sortedVisibleItems = nil;
+
     if (!self.startDate && pickerCollectionView.contentOffset.y < 0.0f) {
         [self appendPastDates];
     }
